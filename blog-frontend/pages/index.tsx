@@ -1,10 +1,8 @@
 import Head from "next/head";
 import type { GetServerSideProps, NextPage } from "next";
-import { Inter } from "next/font/google";
 import { fetchCategories } from "@/http";
 import { AxiosResponse } from "axios";
 import { ICollectionResponse, ICategory } from "@/types";
-const inter = Inter({ subsets: ["latin"] });
 
 const Home: NextPage = () => {
   return (
