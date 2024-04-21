@@ -1,7 +1,9 @@
 import Head from "next/head";
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { Inter } from "next/font/google";
-
+import { fetchCategories } from "@/http";
+import { AxiosResponse } from "axios";
+import { ICollectionResponse, ICategory } from "@/types";
 const inter = Inter({ subsets: ["latin"] });
 
 const Home: NextPage = () => {
@@ -20,4 +22,20 @@ const Home: NextPage = () => {
   );
 };
 
+{
+  /* create the next.js server side rendering */
+}
+export const getServerSideProps: GetServerSideProps = async () => {
+  // fetch the categories
+  const { data: categories }: AxiosResponse<ICollectionResponse<ICategory[]>> =
+    await fetchCategories();
+  console.log("categories :", categories);
+  return {
+    props: {
+      categories: {
+        items: categories.data,
+      },
+    },
+  };
+};
 export default Home;
