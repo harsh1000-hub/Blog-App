@@ -1,10 +1,21 @@
 import Head from "next/head";
 import type { GetServerSideProps, NextPage } from "next";
-import { fetchCategories } from "@/http";
+import { fetchArticles, fetchCategories } from "@/http";
 import { AxiosResponse } from "axios";
-import { ICollectionResponse, ICategory } from "@/types";
-
-const Home: NextPage = () => {
+import { ICollectionResponse, ICategory, IArticle } from "@/types";
+import Tabs from "@/components/Tabs";
+import ArticleList from "@/components/ArticleList";
+import qs from "qs";
+interface IPropTypes {
+  categories: {
+    items: ICategory[];
+  };
+  articles: {
+    items: IArticle[];
+  };
+}
+const Home: NextPage<IPropTypes> = ({ categories, articles }) => {
+  console.log("categories", categories);
   return (
     <>
       <Head>
@@ -13,9 +24,10 @@ const Home: NextPage = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <h1 className="text-primary">Welcome to Coders Blog</h1>
-      </main>
+      <Tabs categories={categories.items} />
+
+      {/* Articles */}
+      <ArticleList articles={articles.items} />
     </>
   );
 };
@@ -24,14 +36,29 @@ const Home: NextPage = () => {
   /* create the next.js server side rendering */
 }
 export const getServerSideProps: GetServerSideProps = async () => {
+  // fetch the articles
+  const options = {
+    populate: ["author.avatar"],
+    sort: ["id:desc"],
+  };
+
+  const queryString = qs.stringify(options);
+  // console.log(queryString);
+  const { data: articles }: AxiosResponse<ICollectionResponse<IArticle[]>> =
+    await fetchArticles(queryString);
+
   // fetch the categories
   const { data: categories }: AxiosResponse<ICollectionResponse<ICategory[]>> =
     await fetchCategories();
-  console.log("categories :", categories);
+  // console.log("categories :", categories);
   return {
     props: {
       categories: {
         items: categories.data,
+      },
+      articles: {
+        items: articles.data,
+        pagination: articles.meta.pagination,
       },
     },
   };
