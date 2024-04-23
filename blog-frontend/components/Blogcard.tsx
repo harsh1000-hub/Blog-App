@@ -2,6 +2,7 @@ import { IArticle } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
+import { formatDate } from "@/utils";
 
 interface IPropType {
   article: IArticle;
@@ -26,8 +27,14 @@ const Blogcard = ({ article }: IPropType) => {
         <span className="text-sm font-bold text-gray-600">
           {article.attributes.author.data.attributes.firstname}{" "}
           {article.attributes.author.data.attributes.lastname} on &nbsp;
-          <span className="text-gray-400">{article.attributes.createdAt}</span>
+          <span className="text-gray-400">
+            {formatDate(article.attributes.createdAt)}
+          </span>
         </span>
+      </div>
+      <div className="text-gray-500 ">
+        {article.attributes.shortDescription.slice(0, 250)}
+        {article.attributes.shortDescription.length > 250 ? "..." : ""}
       </div>
     </div>
   );

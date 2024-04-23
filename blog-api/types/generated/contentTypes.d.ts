@@ -388,6 +388,7 @@ export interface ApiArticleArticle extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
+    shortDescription: Attribute.Text & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
